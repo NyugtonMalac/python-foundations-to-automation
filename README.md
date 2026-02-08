@@ -4,6 +4,9 @@ This repository contains my hands-on Python practice and portfolio work, created
 
 The focus of this repository is not on isolated code snippets, but on building practical, structured solutions that reflect real-world data handling, automation, and analytical use cases.
 
+This repository is also used to practice real-world Git workflows, including branching, pull requests, and code reviews.
+
+
 ## Covered Topics
 - Python fundamentals and clean coding principles
 - Object-oriented programming
