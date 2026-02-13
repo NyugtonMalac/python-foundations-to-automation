@@ -1,3 +1,24 @@
+"""
+Rock-Paper-Scissors — Flask Web Application
+
+This application is a web-based adaptation of a two-player
+Rock-Paper-Scissors console exercise.
+
+Originally developed as part of a loop and input validation task,
+the project was extended into a deployable Flask application
+to demonstrate:
+
+- Server-side validation (odd round enforcement)
+- Session-based state management
+- Two-player sequential interaction
+- Controlled error handling
+- Production deployment using virtual environments
+
+Part of the "Python Foundations to Automation" learning path.
+"""
+
+
+
 from flask import Flask, request, render_template_string, session
 
 app = Flask(__name__)
