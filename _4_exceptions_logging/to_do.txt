@@ -1,0 +1,4 @@
+gyerek puszilgatás
+exception kezelések
+logging hozzáadása
+mákos guba készítés
