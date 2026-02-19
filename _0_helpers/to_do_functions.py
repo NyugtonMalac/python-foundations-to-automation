@@ -13,21 +13,25 @@ The base directory is set once by calling `set_base_dir()` from the program's
 entry point (to_do.py). This keeps file path handling predictable and testable.
 """
 
+import logging
 import os
+import json
 
 _BASE_DIR = None
 ENCODING = "utf-8"
+
+logger = logging.getLogger(__name__)
 
 def set_base_dir(base_dir: str) -> None:
     """
     Set the base directory used for task storage.
 
-    The application stores the to-do TXT file next to the main script. Since this
+    The application stores the to-do json file next to the main script. Since this
     module may live in a different folder, the entry point should call this
     function once at startup to configure path resolution.
 
     Args:
-        base_dir: Absolute path to the directory where the TXT file should be created/read.
+        base_dir: Absolute path to the directory where the json file should be created/read.
     """
 
     global _BASE_DIR
@@ -38,59 +42,93 @@ def get_file_path(todo="to_do"):
     Build the absolute file path for the task storage file.
 
     Args:
-        todo: Base filename (without extension). The default creates/uses 'to_do.txt'.
+        todo: Base filename (without extension). The default creates/uses 'to_do.json'.
 
     Returns:
-        Absolute path to the TXT file used for persistence.
+        Absolute path to the json file used for persistence.
 
     Raises:
         RuntimeError: If the base directory has not been set via `set_base_dir()`.
     """
 
     if _BASE_DIR is None:
-        raise RuntimeError("Base directory is not set. Call set_base_dir() from main.")
-    return os.path.join(_BASE_DIR, f"{todo}.txt")
+        msg = "Base directory is not set. Call set_base_dir() from main."
+        logger.error(msg)
+        raise RuntimeError(msg)
+    return os.path.join(_BASE_DIR, f"{todo}.json")
 
 def add_task(task, todo="to_do"):
     """
-    Append a new task to the task storage file.
+    Add a new task to the JSON task list.
 
-    The task text is normalized (trimmed and lowercased) before storing.
+    Steps (read–modify–write):
+    1) Load the existing list from JSON (or use [] if file doesn't exist yet)
+    2) Append the new normalized task
+    3) Write the full list back to the JSON file
 
     Args:
-        task: The task text provided by the user.
+        task: Task text provided by the user.
         todo: Base filename (without extension) for the storage file.
 
-    Notes:
-        File I/O errors should be handled with try/except and logged (assignment requirement).
+    Raises:
+        OSError: If the file cannot be written.
     """
+    try:    
+        new_task = task.strip().lower()
+        if not new_task:
+            logger.warning("Empty task, not added to the list.")
+            return
         
-    path = get_file_path(todo)
-    with open(path, "a", encoding=ENCODING) as file:
-        file.write(f"{task.strip().lower()}\n")
+        tasks = get_task_list(todo)
+        tasks.append(new_task)
+
+        path = get_file_path(todo)
+        with open(path, "w", encoding=ENCODING) as file:
+            json.dump(tasks, file, ensure_ascii=False, indent=2)
+        logger.info("Task added: %s", new_task)
+    except OSError:
+        logger.exception('Failed to add task to "%s.json": %s', todo, task)
+        raise
 
 def get_task_list(todo="to_do"):
     """
-    Read all tasks from the storage file into a list.
+    Read all tasks from the JSON storage file into a Python list.
 
-    Args:
-        todo: Base filename (without extension) for the storage file.
+    If the file does not exist yet, the function returns an empty list.
+    If the file exists but is empty/corrupted or not a list, it also falls back
+    to an empty list (and logs what happened).
 
     Returns:
-        A list of task strings (normalized without trailing newlines).
-
-    Notes:
-        If the file is missing/empty, the function should return an empty list
-        (once you add exception handling).
+        list[str]: list of task strings
     """
 
-    tasks = []
     path = get_file_path(todo)
-    with open(path, "r", encoding=ENCODING) as file:
-        lines = file.readlines()
-        for line in lines:
-            tasks.append(line.strip())
-    return tasks
+
+    try:
+        with open(path, "r", encoding=ENCODING) as file:
+            data = json.load(file)
+
+        if not isinstance(data, list):
+            logger.error("Invalid JSON structure in %s: expected a list, got %s"
+                         , path
+                         , type(data).__name__)
+            return []
+        
+        return data
+        
+    except FileNotFoundError:
+        msg = f"As {todo}.json does not exist yet, your task list is currently empty."
+        logger.warning(msg)
+        return []
+    
+    except json.JSONDecodeError:
+        logger.error("Could not decode JSON from %s (file is empty or invalid JSON)."
+                     , path)
+        return []
+        
+    except OSError:
+        logger.exception("File error while reading tasks from %s.", path)
+        raise
 
 
 def view_tasks(todo="to_do"):
@@ -101,8 +139,11 @@ def view_tasks(todo="to_do"):
         todo: Base filename (without extension) for the storage file.
     """
     current_tasks = get_task_list(todo)
-    for task_id, task in enumerate(current_tasks, 1):
-        print(f"{task_id}. {task.strip().capitalize()}")
+    if not current_tasks:
+        print("Your task list is currently empty.")
+    else:
+        for task_id, task in enumerate(current_tasks, 1):
+            print(f"{task_id}. {task.strip().capitalize()}")
 
 def remove_task_by_name(task, todo="to_do"):
     """
@@ -120,17 +161,33 @@ def remove_task_by_name(task, todo="to_do"):
     """
     current_tasks = get_task_list(todo)
     remaining_tasks = []
+
+    target = task.strip().lower()
     
+    if target not in current_tasks:
+        logger.warning('No matching task found for: "%s".', task.strip())
+        return
+   
+    removed_count = 0 
     for tsk in current_tasks:
-        if  tsk != task.strip().lower():
+        if  tsk != target:
             remaining_tasks.append(tsk)
-    
+        else:
+            removed_count += 1
+
     path = get_file_path(todo)
     with open(path, "w", encoding=ENCODING)  as file:    
-        for tsk in remaining_tasks:
-            file.write(f"{tsk}\n")
+        json.dump(remaining_tasks, file, ensure_ascii=False, indent=2)
 
-    print(f'Task(s): "{task}" has been removed from the to_do list.')
+    logger.info("Removed %d occurrence(s) of task by name: %s",
+                removed_count,
+                target)
+    if removed_count == 1:
+        prt_msg = f'{removed_count} task'
+    else:
+        prt_msg = f'{removed_count} tasks'
+    print(f'{prt_msg} removed: "{task.strip()}".')
+        
 
 
 def remove_task_by_id(task_id, todo="to_do"):
@@ -145,18 +202,19 @@ def remove_task_by_id(task_id, todo="to_do"):
         You should validate that `task_id` is within range before rewriting the file.
     """
     current_tasks = get_task_list(todo)
-    remaining_tasks = []
+    row_nr = len(current_tasks)
     
-    for tsk_id, tsk in enumerate(current_tasks, 1):
-        if  tsk_id != task_id:
-            remaining_tasks.append(tsk)
-    
-    path = get_file_path(todo)
-    with open(path, "w", encoding=ENCODING)  as file:    
-        for tsk in remaining_tasks:
-            file.write(f"{tsk}\n")
-            
-    print(f'Task nr{task_id} has been removed from the to_do list.')
+    if 1 <= task_id <= row_nr:
+        removed_task = current_tasks.pop(task_id - 1)
+        
+        path = get_file_path(todo)
+        with open(path, "w", encoding=ENCODING)  as file:    
+            json.dump(current_tasks, file, ensure_ascii=False, indent=2)
+                
+        print(f'Task #{task_id} has been removed from the to_do list.')
+        logger.info("Task removed by id: %s (%s)", task_id, removed_task)
+    else:
+        logger.warning('No matching task number found: %s', task_id)
 
 def display_main_menu():
     """
@@ -214,7 +272,7 @@ def what_to_do_id(menu_length):
             resp = int(input("Please select a task by its number: "))
             if resp in range(1, menu_length + 1):
                 return resp
-            print(f"Please enter a number between 1 and {menu_length}!")
+            print(f"Please enter a number between 1 and {menu_length}.")
         except ValueError:
             print("Please enter a whole number.")
 

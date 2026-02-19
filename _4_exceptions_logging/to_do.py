@@ -14,14 +14,14 @@ Features:
 - Exit
 
 Persistence:
-Tasks are stored in a TXT file located next to this script.
+Tasks are stored in a json file located next to this script.
 
 Reliability:
 File operations are expected to be wrapped in exception handling and important
 events/errors should be logged to both console and a log file.
 
 Note:
-The TXT file should be committed to version control. Log files should be excluded
+The json file should be committed to version control. Log files should be excluded
 (e.g., using .gitignore).
 """
 
@@ -43,8 +43,9 @@ from to_do_functions import (display_main_menu
                              , display_sub_menu
                              , remove_task_by_name
                              ,remove_task_by_id
+                             ,get_task_list
 )
-# current folder for todo.txt
+# current folder for todo
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -54,15 +55,18 @@ def main():
     clear_terminal()
     start = 0
     logger.info("Application started.")
+
     while start < 4:
         clear_terminal()
         start = what_to_do_id(display_main_menu())
         if start == 1:
 
-            what_task = input("Please enter the task: ")
-            add_task(task=what_task)
-            print(f'Task: "{what_task}" has been added to the list.')
-            logger.info("Task added: %s", what_task)
+            what_task = input("\nPlease enter the task: ")
+            try:
+                add_task(task=what_task)
+                print(f'Task: "{what_task}" has been added to the list.')
+            except OSError:
+                print("Sorry, I couldn't save the task due to a file error.")
             waiting_for_user()
       
         elif start == 2:
@@ -74,26 +78,33 @@ def main():
             waiting_for_user()
 
         elif start == 3:
+            if not get_task_list():
+                print('No tasks to remove.')
+                waiting_for_user()
+                continue
+            
             clear_terminal()
             sub_start = what_to_do_id(display_sub_menu())
             if sub_start == 1:
-                tsk_to_r = input("Please enter the task to be removed from the list: ")
+                tsk_to_r = input("\nPlease enter the task to be removed from the list: ")
                 remove_task_by_name(tsk_to_r)
-                logger.info('Task removed by name: %s', tsk_to_r.strip().lower())
                 waiting_for_user()
 
             elif  sub_start == 2:
-                tskid_to_r = int(input("Please enter the number of task to be removed: "))
-                remove_task_by_id(tskid_to_r)
-                logger.info("Task removed by id: %s", tskid_to_r)
+                try:
+                    tskid_to_r = int(input("\nPlease enter the number of task to be removed: "))
+                    remove_task_by_id(tskid_to_r)
+                except ValueError:
+                    print('Invalid input. Please enter a task number.')
                 waiting_for_user()
+
         elif start == 4:
-            clear_terminal()
-            print("The program has finished.")
+            print("\nThe program has finished.")
             logger.info('Application finished.')
+            waiting_for_user()
+            clear_terminal()
             break
     
-
 
 if __name__ == "__main__":
     main()

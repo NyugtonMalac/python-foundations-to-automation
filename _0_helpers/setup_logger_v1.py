@@ -6,11 +6,11 @@ import logging
 import os
 
 def create_file_handler(log_file, level=logging.DEBUG):
-    file_handler = logging.FileHandler(log_file)
+    file_handler = logging.FileHandler(log_file, encoding="utf-8")
     file_handler.setLevel(level)
     return file_handler
 
-def create_stream_handler(level=logging.INFO):
+def create_stream_handler(level=logging.WARNING):
     stream_handler = logging.StreamHandler()
     stream_handler.setLevel(level)
     return stream_handler
@@ -41,7 +41,7 @@ def setup_logger(name, log_file="logs/log.log", level=logging.DEBUG, handlers=No
             set_formatter(file_handler, detailed=True)
             logger.addHandler(file_handler)
         elif handler == 'stream':
-            stream_handler = create_stream_handler(logging.INFO)
+            stream_handler = create_stream_handler()
             set_formatter(stream_handler, detailed=False)
             logger.addHandler(stream_handler)        
 
