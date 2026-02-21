@@ -1,0 +1,26 @@
+[
+    {
+        "id": 101,
+        "name": "Anna Kovacs",
+        "department": "Data Engineering",
+        "email": "anna.kovacs@example.com",
+        "salary": 72000,
+        "active": true
+    },
+    {
+        "id": 102,
+        "name": "David Nagy",
+        "department": "Automation",
+        "email": "david.nagy@example.com",
+        "salary": 68000,
+        "active": true
+    },
+    {
+        "id": 103,
+        "name": "Sofia Toth",
+        "department": "Analytics",
+        "email": "sofia.toth@example.com",
+        "salary": 75000,
+        "active": false
+    }
+]

@@ -24,12 +24,12 @@ def set_formatter(handler, detailed=False):
 
 def setup_logger(name, log_file="logs/log.log", level=logging.DEBUG, handlers=None):
 
-    logger = logging.getLogger(name)
-    logger.setLevel(level)
+    root = logging.getLogger()
+    root.setLevel(level)
 
-    if logger.hasHandlers():
-        logger.handlers.clear()
-
+    if root.hasHandlers():
+        root.handlers.clear()
+    
     os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
     if handlers is None:
@@ -39,10 +39,14 @@ def setup_logger(name, log_file="logs/log.log", level=logging.DEBUG, handlers=No
         if handler == 'file':
             file_handler = create_file_handler(log_file, level)
             set_formatter(file_handler, detailed=True)
-            logger.addHandler(file_handler)
+            root.addHandler(file_handler)
         elif handler == 'stream':
             stream_handler = create_stream_handler()
             set_formatter(stream_handler, detailed=False)
-            logger.addHandler(stream_handler)        
+            root.addHandler(stream_handler)     
+
+    logger = logging.getLogger(name)   
+    logger.setLevel(level)
+    logger.propagate = True
 
     return logger    
