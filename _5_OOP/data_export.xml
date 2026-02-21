@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<data>
+    <item>
+        <id>101</id>
+        <name>Anna Kovacs</name>
+        <department>Data Engineering</department>
+        <email>anna.kovacs@example.com</email>
+        <salary>72000</salary>
+        <active>True</active>
+    </item>
+    <item>
+        <id>102</id>
+        <name>David Nagy</name>
+        <department>Automation</department>
+        <email>david.nagy@example.com</email>
+        <salary>68000</salary>
+        <active>True</active>
+    </item>
+    <item>
+        <id>103</id>
+        <name>Sofia Toth</name>
+        <department>Analytics</department>
+        <email>sofia.toth@example.com</email>
+        <salary>75000</salary>
+        <active>False</active>
+    </item>
+</data>

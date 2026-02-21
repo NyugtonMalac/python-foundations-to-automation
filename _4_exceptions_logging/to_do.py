@@ -51,7 +51,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 def main():
     set_base_dir(BASE_DIR)
-    logger = setup_logger("to_do_app")
+    logger = setup_logger("to_do_app", log_file="logs/to_do_app.log")
     clear_terminal()
     start = 0
     logger.info("Application started.")

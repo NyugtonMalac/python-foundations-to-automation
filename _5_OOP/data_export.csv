@@ -1,0 +1,4 @@
+email,name,salary,active,id,department
+anna.kovacs@example.com,Anna Kovacs,72000,True,101,Data Engineering
+david.nagy@example.com,David Nagy,68000,True,102,Automation
+sofia.toth@example.com,Sofia Toth,75000,False,103,Analytics
