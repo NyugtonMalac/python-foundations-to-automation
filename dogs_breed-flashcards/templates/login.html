@@ -1,0 +1,62 @@
+{# ==========================================================================
+   login.html
+
+   User authentication page.
+
+   Purpose:
+   - Collect username and password
+   - Display validation errors
+   - Provide clean entry point into the application
+
+   Expected variables:
+   - error (str | empty)
+
+   Behavior:
+   - On successful login → redirect to /play
+   - On failure → show localized error message
+
+   Security:
+   - Password verification handled server-side
+   - No sensitive data rendered in template
+   ========================================================================== #}
+
+
+{% extends "base.html" %}
+{% block title %}Belépés • Dog Grooming Flashcards{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-title">
+      <h2>Belépés</h2>
+      <div class="subtle">Add meg a hozzáférésed.</div>
+    </div>
+
+    {% if error %}
+      <div class="notice" style="border-color: rgba(220,38,38,0.25); color: #7f1d1d;">
+        ❗ {{ error }}
+      </div>
+      <div style="height: 12px;"></div>
+    {% else %}
+      <div class="notice">
+        Ha nincs hozzáférésed, írj nekem és adok támogatói belépőt.
+      </div>
+      <div style="height: 12px;"></div>
+    {% endif %}
+
+    <form class="form" method="post" action="{{ url_for('login') }}">
+      <div>
+        <label>Felhasználónév</label>
+        <input type="text" name="username" placeholder="Felhasználónév" autocomplete="username" required>
+      </div>
+
+      <div>
+        <label>Jelszó</label>
+        <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" type="submit">Belépés</button>
+      </div>
+    </form>
+  </div>
+{% endblock %}

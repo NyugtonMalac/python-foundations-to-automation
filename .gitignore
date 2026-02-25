@@ -207,5 +207,31 @@ marimo/_lsp/
 __marimo__/
 
 
-# private practice folder (not tracked in Git)
+# private folders (not tracked in Git)
 practice/
+
+dogs_breed-flashcards/data_private
+
+dogs_breed-flashcards/raw_data_inputs
+dogs_breed-flashcards/saves
+dogs_breed-flashcards/tools
+
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+
+# OS
+.DS_Store
+desktop.ini
+
+
+# Private data
+data_private/users.json
+saves/*.json
+
+# cPanel specific
+passenger_wsgi.py

@@ -1,0 +1,112 @@
+{# ==========================================================================
+   review.html
+
+   Flashcard review screen.
+
+   Purpose:
+   - Display correct answers vs user answers
+   - Show automatic match status
+   - Allow user to decide:
+        • Accept round as correct
+        • Remove card from learning deck
+
+   Expected variables:
+   - card_id (str)
+   - image_url (str)
+   - correct_answers (dict)
+   - user_answers (dict)
+   - all_correct (bool)
+
+   Workflow:
+   question → review → result
+
+   Notes:
+   - Final correctness decision is user-controlled.
+   - State persistence happens in the result route.
+   ========================================================================== #}
+
+
+{% extends "base.html" %}
+{% block title %}Ellenőrzés • Dog Grooming Flashcards{% endblock %}
+
+{% block content %}
+  <div class="grid grid-2">
+    <div class="card flashcard">
+      <div class="card-title">
+        <h2>Ellenőrzés</h2>
+        <div class="badge">Kártya: {{ card_id }}</div>
+      </div>
+
+      <div class="image-wrap">
+        <img class="dog-image" src="{{ image_url }}" alt="Kutya kép">
+      </div>
+
+      <div class="kicker">
+        {% if all_correct %}
+          <span class="badge badge-ok">✔ Automatikusan egyezik</span>
+        {% else %}
+          <span class="badge badge-bad">✖ Nem teljes egyezés</span>
+        {% endif %}
+        <span class="subtle">Végső döntés: te jelölöd.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <h2>Válaszok</h2>
+        <div class="subtle">Összevetés</div>
+      </div>
+
+      <div class="kv">
+        <div class="kv-row">
+          <div class="kv-key">Fajta</div>
+          <div class="kv-val">
+            <div><strong>Helyes:</strong> {{ correct_answers.breed }}</div>
+            <div><strong>Te:</strong> {{ user_answers.breed }}</div>
+          </div>
+        </div>
+
+        <div class="kv-row">
+          <div class="kv-key">Szőrzet</div>
+          <div class="kv-val">
+            <div><strong>Helyes:</strong> {{ correct_answers.coat_type }}</div>
+            <div><strong>Te:</strong> {{ user_answers.coat_type }}</div>
+          </div>
+        </div>
+
+        <div class="kv-row">
+          <div class="kv-key">Ápolás</div>
+          <div class="kv-val">
+            <div><strong>Helyes:</strong> {{ correct_answers.grooming }}</div>
+            <div><strong>Te:</strong> {{ user_answers.grooming }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hr"></div>
+
+      <form class="form" method="post" action="{{ url_for('result') }}">
+        <div class="notice">
+          Jelöld be, ahogy te értékeled a kört:
+        </div>
+
+        <div style="display:grid; gap:10px;">
+          <label style="margin:0;">
+            <input type="checkbox" name="is_correct" value="1" {% if all_correct %}checked{% endif %}>
+            Ezt a kört helyesnek fogadom el
+          </label>
+
+          <label style="margin:0;">
+            <input type="checkbox" name="remove_from_deck" value="1">
+            Ezt a kártyát kiveszem a tanuló pakliból (megtanultam)
+          </label>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" type="submit">Mentés & Tovább</button>
+          <a class="btn btn-ghost" href="{{ url_for('play') }}">Vissza a kérdéshez</a>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

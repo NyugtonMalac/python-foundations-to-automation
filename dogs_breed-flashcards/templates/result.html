@@ -1,0 +1,71 @@
+{# ==========================================================================
+   result.html
+
+   Displays round result statistics.
+
+   Variables expected:
+   - total_seen
+   - total_correct
+   - total_wrong
+   - remaining_count
+   - learned_count
+   - is_deck_empty
+
+   Navigation:
+   - Continue learning
+   - Finish (if deck empty)
+   ========================================================================== #}
+
+{% extends "base.html" %}
+{% block title %}Eredmény • Dog Grooming Flashcards{% endblock %}
+
+{% block content %}
+  <div class="card">
+    <div class="card-title">
+      <h2>Kör eredménye</h2>
+      <div class="subtle">Mentve ✅</div>
+    </div>
+
+    <div class="result-layout">
+      <div class="result-stats">
+        <div class="notice">
+          <strong>Pakli állapota</strong>
+          <div style="height:6px;"></div>
+          <div>Tanuló pakli: <strong>{{ remaining_count }}</strong> db</div>
+          <div>MegtanuIlt: <strong>{{ learned_count }}</strong> db</div>
+        </div>
+
+        <div class="notice">
+          <strong>Összes stat</strong>
+          <div style="height:6px;"></div>
+          <div>Látott kártyák: <strong>{{ total_seen }}</strong></div>
+          <div>Helyes válaszok: <strong>{{ total_correct }}</strong></div>
+          <div>Helytelen válaszok: <strong>{{ total_wrong }}</strong></div>
+        </div>
+
+        <div class="notice">
+          <strong>Aktuális kártya stat</strong>
+          <div style="height:6px;"></div>
+          <div>Látta: <strong>{{ current_card_seen }}</strong></div>
+          <div>Helyes: <strong>{{ current_card_correct }}</strong></div>
+          <div>Helytelen: <strong>{{ current_card_wrong }}</strong></div>
+        </div>
+      </div>
+
+      <div class="btn-row result-actions">
+        {% if is_deck_empty %}
+          <a class="btn btn-primary" href="{{ url_for('finish') }}">Befejezés</a>
+        {% else %}
+          <a class="btn btn-primary" href="{{ url_for('play') }}">Következő kártya</a>
+        {% endif %}
+        <form method="post" action="{{ url_for('reset') }}" style="display:inline;">
+          <button class="btn btn-ghost" type="submit"
+                  onclick="return confirm('Biztosan újrakezded? A mentésed törlődik.')">
+            Újrakezdés
+          </button>
+        </form>
+        <a class="btn btn-ghost" href="{{ url_for('finish') }}">Befejezem mára</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

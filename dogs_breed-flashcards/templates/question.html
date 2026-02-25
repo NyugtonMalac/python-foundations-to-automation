@@ -1,0 +1,75 @@
+{# ==========================================================================
+   question.html
+
+   Flashcard question view.
+
+   Variables expected:
+   - card_id (str)
+   - image_url (str)
+   - remaining_count (int)
+   - learned_count (int)
+
+   Workflow:
+   play → review → result
+   ========================================================================== #}
+
+{% extends "base.html" %}
+{% block title %}Kérdés • Dog Grooming Flashcards{% endblock %}
+
+{% block content %}
+  <div class="grid grid-2">
+    <div class="card flashcard">
+      <div class="card-title">
+        <h2>Mi ez a kutya?</h2>
+        <div class="badge">Kártya: {{ card_id }}</div>
+      </div>
+
+      <div class="image-wrap">
+        <img class="dog-image" src="{{ image_url }}" alt="Kutya kép">
+      </div>
+
+      <div class="kicker">
+        <span>📝 Tipp:</span>
+        <span>írd le, amit tudsz — a végén összevetjük.</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <h2>Válaszaid</h2>
+        <div class="subtle">3 mező, Enter nem gond 😉</div>
+      </div>
+
+      <form class="form" method="post" action="{{ url_for('review') }}">
+        <div>
+          <label>Kutya fajtája</label>
+          <input type="text" name="breed" placeholder="..." required>
+        </div>
+
+        <div>
+          <label>Szőrzet típusa</label>
+          <input type="text" name="coat_type" placeholder="..." required>
+        </div>
+
+        <div>
+          <label>Ápolás módja</label>
+          <input type="text" name="grooming" placeholder="..." required>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" type="submit">Ellenőrzés</button>
+          <a class="btn btn-ghost" href="{{ url_for('logout') }}">Kilépés</a>
+        </div>
+      </form>
+
+      <div class="hr"></div>
+
+      <div class="notice">
+        <strong>Haladás:</strong>
+        <div style="height:6px;"></div>
+        <div>Tanuló pakli: <strong>{{ remaining_count }}</strong> db</div>
+        <div>MegtanuIlt: <strong>{{ learned_count }}</strong> db</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+﻿[
+    {
+        "id": "dog_018",
+        "breed": "Magyar agár",
+        "coat_type": "rövid szőrzet",
+        "grooming": "általános ápolás",
+        "image": "img/magyar_agar.jpg"
+    },
+    {
+        "id": "dog_035",
+        "breed": "Ír szetter",
+        "coat_type": "vegyes szőrzetű (zászlós)",
+        "grooming": "trimmelés",
+        "image": "img/ir_szetter.jpg"
+    },
+    {
+        "id": "dog_045",
+        "breed": "Puli",
+        "coat_type": "nemezes szőrzetű",
+        "grooming": "kézzel történő feltépés",
+        "image": "img/puli.jpg"
+    },
+    {
+        "id": "dog_049",
+        "breed": "Dandie Dinmont terrier",
+        "coat_type": "szálkás szörzetű",
+        "grooming": "trimmelés",
+        "image": "img/dandie_dinmont_terrier.jpg"
+    },
+    {
+        "id": "dog_072",
+        "breed": "Berni pásztorkutya",
+        "coat_type": "félhosszú, hosszú szőrzetű",
+        "grooming": "fésülés",
+        "image": "img/berni_pasztorkutya.jpg"
+    },
+    {
+        "id": "dog_075",
+        "breed": "Afgán agár",
+        "coat_type": "félhosszú, hosszú szőrzetű",
+        "grooming": "fésülés",
+        "image": "img/afgan_agar.jpg"
+    }
+]
