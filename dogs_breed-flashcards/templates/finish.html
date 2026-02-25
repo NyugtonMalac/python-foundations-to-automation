@@ -1,0 +1,63 @@
+{# ==========================================================================
+   finish.html
+
+   End-of-session screen.
+
+   Purpose:
+   - Display current learning statistics
+   - Allow user to:
+        • Continue learning
+        • Fully reset progress
+        • Log out
+
+   Expected variables:
+   - total_seen (int)
+   - total_correct (int)
+   - total_wrong (int)
+   - remaining_count (int)
+   - learned_count (int)
+
+   Triggered when:
+   - Learning deck becomes empty
+   - User explicitly navigates to /finish
+
+   Notes:
+   - Reset action deletes saved state file
+   - Session remains active unless user logs out
+   ========================================================================== #}
+
+{% extends "base.html" %}
+{% block title %}Mai tanulás vége{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-title">
+    <h2>Köszönöm a mai tanulást 🌿</h2>
+    <div class="subtle">Mentés megőrizve</div>
+  </div>
+
+  <div class="notice">
+    <strong>Mai állapotod:</strong>
+    <div style="height:8px;"></div>
+    <div>Látott kártyák: <strong>{{ total_seen }}</strong></div>
+    <div>Helyes válaszok: <strong>{{ total_correct }}</strong></div>
+    <div>Helytelen válaszok: <strong>{{ total_wrong }}</strong></div>
+    <div>Tanuló pakli: <strong>{{ remaining_count }}</strong></div>
+  </div>
+
+  <div class="btn-row" style="margin-top:18px;">
+    <a class="btn btn-primary" href="{{ url_for('play') }}">
+      Folytatom a tanulást
+    </a>
+    <form method="post" action="{{ url_for('reset') }}">
+      <button class="btn btn-ghost"
+              onclick="return confirm('Biztosan teljesen újrakezded?')">
+        Teljes újrakezdés
+      </button>
+    </form>
+    <a class="btn btn-ghost" href="{{ url_for('logout') }}">
+      Kijelentkezés
+    </a>
+  </div>
+</div>
+{% endblock %}

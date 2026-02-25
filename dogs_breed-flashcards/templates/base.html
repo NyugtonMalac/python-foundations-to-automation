@@ -1,0 +1,64 @@
+{# ==========================================================================
+   base.html
+
+   Base layout template.
+
+   Provides:
+   - Global layout container
+   - Header
+   - Footer
+   - CSS includes
+
+   Blocks:
+   - title
+   - content
+   ========================================================================== #}
+
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Dog Grooming Flashcards{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="brand">
+          <h1>Dog Grooming Flashcards</h1>
+          <p>Tanulj képek alapján — egyszerű, gyors, motiváló.</p>
+        </div>
+
+        <div class="pill">
+          {% if session.get("user") %}
+            <div class="pill">✅ Bejelentkezve: <strong>{{ session["user"] }}</strong></div>
+          {% else %}
+            <div class="pill">🔒 Bejelentkezés szükséges</div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% block content %}{% endblock %}
+
+      <footer class="footer">
+        <div class="footer-inner">
+
+          <a href="https://datamagic.zoldbolygo.hu" target="_blank" rel="noopener" class="footer-logo-link">
+            <img src="{{ url_for('static', filename='brand/DM.png') }}"
+                alt="Data Magic logo"
+                class="footer-logo">
+          </a>
+
+          © 2026
+          <a href="https://datamagic.zoldbolygo.hu" target="_blank" rel="noopener" class="footer-text-link">
+            Data Magic
+          </a>
+          — by Edit • Data, automation and learning
+
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
+

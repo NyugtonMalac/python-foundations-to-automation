@@ -1,0 +1,412 @@
+/* ==========================================================================
+   Dog Grooming Flashcards – UI Stylesheet
+   --------------------------------------------------------------------------
+   Purpose:
+   - Defines visual system (colors, spacing, shadows, radius)
+   - Implements card-based layout
+   - Provides responsive 2-column result layout
+   - Ensures consistent design language across templates
+
+   Design system:
+   - Soft neutral background
+   - Purple / pink gradient accent
+   - Rounded card UI with subtle shadow depth
+   - Mobile-first responsive grid
+
+   Structure:
+   1. CSS variables (design tokens)
+   2. Base reset & typography
+   3. Layout containers
+   4. Card components
+   5. Form elements & buttons
+   6. Result layout
+   7. Responsive rules
+
+   Author: NyugtonMalac
+   Project: Data Magic – Dog Grooming Flashcards
+   ========================================================================== */
+
+:root{
+  --bg: #fbfbfd;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: rgba(17,24,39,0.08);
+  --shadow: 0 10px 30px rgba(17,24,39,0.08);
+  --shadow-soft: 0 6px 18px rgba(17,24,39,0.06);
+
+  --accent: #a78bfa;          /* soft purple */
+  --accent-2: #f472b6;        /* soft pink */
+  --ok: #16a34a;
+  --bad: #dc2626;
+
+  --radius: 18px;
+  --radius-sm: 12px;
+  --maxw: 980px;
+}
+
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
+body{
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  background:
+    radial-gradient(900px 500px at 10% 10%, rgba(167,139,250,0.18), transparent 60%),
+    radial-gradient(900px 500px at 90% 30%, rgba(244,114,182,0.14), transparent 60%),
+    var(--bg);
+}
+
+a{ color: inherit; text-decoration: none; }
+small{ color: var(--muted); }
+
+.container{
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 28px 18px 48px;
+}
+
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.brand{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.brand h1{
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 0.2px;
+  font-weight: 700;
+}
+
+.brand p{
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pill{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-soft);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.card{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px;
+}
+
+.card + .card{ margin-top: 0px; }
+
+.card-title{
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.card-title h2{
+  margin: 0;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.subtle{
+  color: var(--muted);
+  font-size: 13px;
+}
+
+
+.flashcard{
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+/* opcionális: a képblokk után legyen “rugalmas tér”, hogy alulra menjen a tipp */
+.flashcard .image-wrap{
+  flex: 0 0 auto;
+}
+
+.image-wrap{
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  background: #fff;
+
+  /* legyen szép “képkeret” */
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* opcionális: egy kis belső tér, hogy ne tapadjon */
+  padding: 10px;
+}
+
+.image-wrap img{
+  display: block;
+  width: 100%;
+  height: 250px;        /* FIX 250px */
+  object-fit: contain;  /* NEM vágja, csak letterboxol */
+}
+
+.kicker{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.kicker strong{
+  color: var(--text);
+}
+
+.form{
+  display: grid;
+  gap: 12px;
+}
+
+label{
+  font-size: 13px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 6px;
+}
+
+input[type="text"], input[type="password"]{
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  outline: none;
+  font-size: 14px;
+  background: rgba(255,255,255,0.9);
+}
+
+input[type="text"]:focus, input[type="password"]:focus{
+  border-color: rgba(167,139,250,0.55);
+  box-shadow: 0 0 0 4px rgba(167,139,250,0.15);
+}
+
+.btn-row{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+button, .btn{
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  padding: 11px 14px;
+  border-radius: 999px;
+  font-weight: 650;
+  font-size: 14px;
+  transition: transform 0.06s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+
+button:active, .btn:active{ transform: translateY(1px); }
+
+.btn-primary{
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 12px 25px rgba(167,139,250,0.22);
+}
+
+.btn-ghost{
+  color: var(--text);
+  background: rgba(255,255,255,0.75);
+  border: 1px solid var(--border);
+}
+
+.btn-danger{
+  color: #fff;
+  background: linear-gradient(135deg, #ef4444, #f43f5e);
+}
+
+.hr{
+  height: 1px;
+  background: var(--border);
+  margin: 16px 0;
+}
+
+.kv{
+  display: grid;
+  gap: 10px;
+}
+
+.kv-row{
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: rgba(17,24,39,0.02);
+  border: 1px solid var(--border);
+}
+
+.kv-key{
+  font-weight: 650;
+  font-size: 14px;
+}
+.kv-val{
+  font-size: 14px;
+  color: var(--muted);
+  text-align: right;
+  max-width: 60%;
+  overflow-wrap: anywhere;
+}
+
+.badge{
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.75);
+}
+
+.badge-ok{ color: var(--ok); border-color: rgba(22,163,74,0.25); }
+.badge-bad{ color: var(--bad); border-color: rgba(220,38,38,0.25); }
+
+.notice{
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.75);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding: 18px 0;
+  opacity: .9;
+  font-size: 14px;
+}
+
+.brand-gif{
+  height: 26px;
+  width: auto;
+}
+
+.footer-brand{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+}
+
+.footer-brand:hover{
+  color: var(--text);
+}
+
+.footer-logo{
+  height:35px;
+  max-height: 35px;
+  width:auto;
+  max-width: 120px;
+  display: block;
+  flex: 0 0 auto;
+  vertical-align:middle;
+}
+
+.footer-inner{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  justify-content:center;
+  text-align:center;
+}
+
+.footer-logo{
+  height: 35px !important;
+  max-height: 35px !important;
+  width: auto !important;
+  max-width: 140px !important;
+  display: inline-block !important;
+}
+
+.result-layout{
+  display: grid;
+  gap: 14px;
+}
+
+.result-stats{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.result-actions{
+  justify-content: flex-end;
+}
+
+@media (max-width: 900px){
+  .result-stats{
+    grid-template-columns: 1fr;
+  }
+  .result-actions{
+    justify-content: flex-start;
+  }
+}
+
+/* ========== LAYOUT: 2 kártya egyforma magassággal ========== */
+
+/* alap: mobilon egymás alatt */
+.grid.grid-2{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* desktop: két oszlop */
+@media (min-width: 900px){
+  .grid.grid-2{
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+
+  /* FIX keretmagasság desktopon */
+  .grid.grid-2 > .card{
+    height: 560px;
+    overflow: auto;   /* ha valami mégis hosszabb, görgessen a kártyán belül */
+  }
+}
+
+/* A kártya belső felépítése */
+.grid.grid-2 > .card{
+  display: flex;
+  flex-direction: column;
+}
