@@ -1,5 +1,5 @@
 """
-Dog Grooming Flashcard – Command Line Interface (CLI)
+Dog Grooming Flashcard - Command Line Interface (CLI)
 
 This module provides a terminal-based interface for the
 Dog Grooming Flashcard learning system.
@@ -33,14 +33,11 @@ This module is intended for:
 - Educational demonstration
 """
 
-import os
-from helpers.terminal_clearer import clear_terminal
-from helpers.path_utils import set_base_dir
-from game_engine_DBFG import FlashcardGame
+from _flashcards._domains.dogs.config import DOGS_JSON_PATH
+from _flashcards._cli_helpers.terminal_clearer import clear_terminal
+from _flashcards._domains.dogs.game_engine_DBFG import FlashcardGame
 
-# Configure base directory for file operations
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-set_base_dir(BASE_DIR)
+
 
 
 def main():
@@ -68,7 +65,7 @@ def main():
 
     clear_terminal()
     dog_flashcard_game = FlashcardGame()
-    dog_flashcard_game.load_cards(file_name="dogs")
+    dog_flashcard_game.load_cards(json_path=DOGS_JSON_PATH)
 
     print("Üdvözöllek a Kutya Grooming tanuló alkalmazásban!\n")
 

@@ -1,7 +1,7 @@
 """
 save_manager.py
 
-Persistent storage layer for the Dog Grooming Flashcard application.
+Persistent storage layer for flashcard applications.
 
 Responsibilities:
 - Generate safe file paths for user save files
@@ -9,17 +9,14 @@ Responsibilities:
 - Load previously saved state
 - Delete (reset) saved progress
 
-All save files are stored under:
-    <project_root>/saves/<username>.json
+The storage location is provided by the caller (domain config),
+so this module can be reused across multiple flashcard domains
+(e.g. dogs, language).
 """
 
 import os
 import json
 from typing import Optional, Dict, Any
-
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SAVES_DIR = os.path.join(BASE_DIR, "saves")
 
 
 def _safe_filename(username: str) -> str:
@@ -35,72 +32,60 @@ def _safe_filename(username: str) -> str:
     Returns:
         str: A filesystem-safe filename (without extension).
              Returns "user" if the cleaned result would be empty.
-
-    Note:
-        This is a lightweight sanitization, not a full security layer.
     """
     allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-"
     cleaned = "".join(ch for ch in username if ch in allowed)
     return cleaned or "user"
 
 
-def get_save_path(username: str) -> str:
+def get_save_path(username: str, saves_dir: str) -> str:
     """
     Build the absolute save file path for a given user.
 
-    Ensures the `saves/` directory exists before returning the path.
+    Ensures the saves directory exists before returning the path.
 
     Args:
         username (str): The user's unique identifier.
+        saves_dir (str): Absolute directory path where save files are stored.
 
     Returns:
         str: Absolute path to the user's save file.
     """
-    os.makedirs(SAVES_DIR, exist_ok=True)
+    os.makedirs(saves_dir, exist_ok=True)
     fname = _safe_filename(username) + ".json"
-    return os.path.join(SAVES_DIR, fname)
+    return os.path.join(saves_dir, fname)
 
 
-def save_state(username: str, state: Dict[str, Any]) -> str:
+def save_state(username: str, state: Dict[str, Any], saves_dir: str) -> str:
     """
     Persist the current game state to disk.
 
-    The state is stored as a formatted JSON file for readability.
-
     Args:
         username (str): The user's unique identifier.
-        state (Dict[str, Any]): Serializable game state dictionary.
+        state (Dict[str, Any]): JSON-serializable game state dictionary.
+        saves_dir (str): Directory where save files are stored.
 
     Returns:
         str: Absolute path of the saved file.
-
-    Raises:
-        TypeError: If `state` contains non-serializable objects.
-        OSError: If writing to disk fails.
     """
-    path = get_save_path(username)
+    path = get_save_path(username, saves_dir)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=4, ensure_ascii=False)
     return path
 
 
-def load_state(username: str) -> Optional[Dict[str, Any]]:
+def load_state(username: str, saves_dir: str) -> Optional[Dict[str, Any]]:
     """
     Load a previously saved game state.
 
     Args:
         username (str): The user's unique identifier.
+        saves_dir (str): Directory where save files are stored.
 
     Returns:
-        Optional[Dict[str, Any]]:
-            - Parsed state dictionary if the save file exists
-            - None if no save file is found
-
-    Raises:
-        json.JSONDecodeError: If the save file is corrupted.
-        OSError: If reading from disk fails.
+        dict if found, otherwise None.
     """
-    path = get_save_path(username)
+    path = get_save_path(username, saves_dir)
     if not os.path.exists(path):
         return None
 
@@ -108,18 +93,18 @@ def load_state(username: str) -> Optional[Dict[str, Any]]:
         return json.load(f)
 
 
-def delete_state(username: str) -> bool:
-    """Delete a user's saved progress (reset functionality).
+def delete_state(username: str, saves_dir: str) -> bool:
+    """
+    Delete a user's saved progress (reset functionality).
 
     Args:
         username (str): The user's unique identifier.
+        saves_dir (str): Directory where save files are stored.
 
     Returns:
-        bool:
-            - True if a save file existed and was deleted
-            - False if no save file was found
+        True if a save file existed and was deleted, otherwise False.
     """
-    path = get_save_path(username)
+    path = get_save_path(username, saves_dir)
     if os.path.exists(path):
         os.remove(path)
         return True
