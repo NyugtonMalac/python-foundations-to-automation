@@ -40,15 +40,11 @@ All persistence is handled externally
 (save_manager.py).
 """
 
-import os
 import json
 import random
 
 
-from helpers.path_utils import set_base_dir, get_file_path
-
 ENCODING = "utf-8-sig"   # Handles UTF-8 with BOM
-
 
 
 ################ DogCards ################
@@ -75,6 +71,7 @@ class DogCard:
         self.grooming = grooming
         self.image = image
         self.image_name = image.split("/")[-1]
+        self.cards_by_id = {}
 
     def __repr__(self):
         return f"DogCard(id={self.id}, breed={self.breed})"
@@ -119,7 +116,7 @@ class FlashcardGame:
         self.total_wrong = 0
         self.learned_count = 0
   
-    def load_cards(self, file_name):
+    def load_cards(self, json_path: str) -> None:
         """
         Load flashcards from a JSON file.
 
@@ -133,8 +130,8 @@ class FlashcardGame:
             - Builds cards_by_id lookup table
         """
         
-        path_json = get_file_path(file_name,file_extension=".json")
-        with open(path_json, "r", encoding=ENCODING) as file:
+        
+        with open(json_path, "r", encoding=ENCODING) as file:
             raw_data = json.load(file)
 
         for d in raw_data:

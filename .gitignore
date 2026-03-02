@@ -210,11 +210,12 @@ __marimo__/
 # private folders (not tracked in Git)
 practice/
 
-dogs_breed-flashcards/data_private
-
-dogs_breed-flashcards/raw_data_inputs
-dogs_breed-flashcards/saves
-dogs_breed-flashcards/tools
+_flashcards/_domains/dogs/data_private
+_flashcards/_domains/dogs/raw_data_inputs
+_flashcards/_domains/dogs/saves
+_flashcards/_domains/dogs/tools
+_flashcards/_domains/dogs/test
+dogs_breed-flashcards
 
 
 

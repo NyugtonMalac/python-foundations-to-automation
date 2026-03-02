@@ -1,5 +1,5 @@
 """
-Dog Grooming Flashcard – Flask Web Application
+Dog Grooming Flashcard - Flask Web Application
 
 This module provides the complete web interface layer for the
 Dog Grooming Flashcard system.
@@ -48,14 +48,12 @@ All domain logic is delegated to FlashcardGame.
 import os
 from flask import Flask, render_template, request, redirect, url_for, session
 
-from helpers.path_utils import set_base_dir
-from helpers.auth_utils import verify_user
-from helpers.save_manager import save_state, load_state, delete_state
 
-from game_engine_DBFG import FlashcardGame
+from _flashcards._domains.dogs.config import USERS_FILE, SAVES_DIR, DOGS_JSON_PATH
+from _flashcards._core.auth_utils import verify_user
+from _flashcards._core.save_manager import save_state, load_state, delete_state
+from _flashcards._domains.dogs.game_engine_DBFG import FlashcardGame
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-set_base_dir(BASE_DIR)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-secret-change-me")
@@ -94,9 +92,9 @@ def build_game_for_user(username: str) -> FlashcardGame:
     """
 
     game = FlashcardGame()
-    game.load_cards(file_name="dogs")
+    game.load_cards(DOGS_JSON_PATH)
 
-    state = load_state(username)
+    state = load_state(username, SAVES_DIR)
     if state:
         game.apply_state(state)
 
@@ -141,7 +139,7 @@ def login():
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
 
-        ok, msg = verify_user(username, password)
+        ok, msg = verify_user(username, password, USERS_FILE)
         if ok:
             session["user"] = username
             return redirect(url_for("play"))
@@ -279,7 +277,7 @@ def result():
     res = game.get_result_view(is_correct=is_correct, remain_card=remain_card)
 
     # Save state after applying turn
-    save_state(username, game.export_state())
+    save_state(username, game.export_state(), SAVES_DIR)
 
     # Clean current card from session (optional)
     session.pop("current_card_id", None)
@@ -336,7 +334,7 @@ def reset():
         return redirect(url_for("login"))
 
     username = session["user"]
-    delete_state(username)
+    delete_state(username, SAVES_DIR)
 
     session.pop("pending_review", None)
     session.pop("current_card_id", None)
