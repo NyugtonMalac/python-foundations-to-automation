@@ -215,8 +215,10 @@ _flashcards/_domains/dogs/raw_data_inputs
 _flashcards/_domains/dogs/saves
 _flashcards/_domains/dogs/tools
 _flashcards/_domains/dogs/test
-dogs_breed-flashcards
+dogs_breed-flashcards/
 
+_flashcards/_domains/one_pic_one_q/
+_flashcards/_domains/language/
 
 
 # Python
@@ -236,3 +238,7 @@ saves/*.json
 
 # cPanel specific
 passenger_wsgi.py
+
+_DM_image_converter/dm_png_to_convert/*
+_DM_image_converter/dm_webp_pics/*
+_DM_image_converter/dm_done/*
